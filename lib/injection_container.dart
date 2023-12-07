@@ -36,5 +36,6 @@ void initInjection() {
         playSongUseCase: sl(),
         pauseSongUseCase: sl(),
         resumeSongUseCase: sl(),
+        seekSongUseCase: sl(),
       ));
 }

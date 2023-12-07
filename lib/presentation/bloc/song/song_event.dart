@@ -18,4 +18,9 @@ class SeekSongEvent extends SongEvent {
   SeekSongEvent(this.duration);
 }
 
+class ChangeSongPositionEvent extends SongEvent {
+  final Duration duration;
+  ChangeSongPositionEvent(this.duration);
+}
+
 class ResumeSongEvent extends SongEvent {}
