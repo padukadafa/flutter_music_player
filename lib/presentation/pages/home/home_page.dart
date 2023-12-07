@@ -36,6 +36,11 @@ class HomePage extends StatelessWidget {
                                 .add(PlaySongEvent(data[index]));
                           },
                           title: Text(data[index].title),
+                          subtitle: Text(
+                            Duration(milliseconds: data[index].duration ?? 0)
+                                .toString()
+                                .substring(3, 7),
+                          ),
                         );
                       },
                     ),

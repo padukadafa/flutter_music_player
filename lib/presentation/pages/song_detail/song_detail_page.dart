@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_music_player/injection_container.dart';
 import 'package:flutter_music_player/presentation/bloc/song/song_bloc.dart';
+import 'package:flutter_music_player/presentation/widgets/play_pause_song_widget.dart';
+import 'package:flutter_music_player/presentation/widgets/time_progress_widget.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -32,12 +34,12 @@ class SongDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          StreamBuilder<Duration>(
-            stream: sl<AudioPlayer>().positionStream,
-            builder: (context, snapshot) {
-              return Row(
-                children: [
-                  Expanded(
+          Row(
+            children: [
+              StreamBuilder<Duration>(
+                stream: sl<AudioPlayer>().positionStream,
+                builder: (context, snapshot) {
+                  return Expanded(
                     child: Slider(
                       value: (snapshot.data?.inMilliseconds ?? 0).toDouble(),
                       max: Duration(
@@ -54,45 +56,14 @@ class SongDetailPage extends StatelessWidget {
                             SeekSongEvent(Duration(milliseconds: val.toInt())));
                       },
                     ),
-                  ),
-                  Text((snapshot.data?.toString() ?? "").substring(3, 7)),
-                  const Text("/"),
-                  Text((sl<AudioPlayer>().duration.toString()).substring(3, 7)),
-                  const SizedBox(
-                    width: 24,
-                  ),
-                ],
-              );
-            },
-            initialData: const Duration(milliseconds: 0),
+                  );
+                },
+                initialData: const Duration(milliseconds: 0),
+              ),
+              TimeProgressWidget(),
+            ],
           ),
-          StreamBuilder(
-              stream: sl<AudioPlayer>().playerStateStream,
-              builder: (context, snapshot) {
-                return Visibility(
-                  visible:
-                      snapshot.data?.processingState == ProcessingState.ready &&
-                          (snapshot.data?.playing ?? false),
-                  replacement: IconButton(
-                    onPressed: () {
-                      context.read<SongBloc>().add(ResumeSongEvent());
-                    },
-                    icon: const Icon(
-                      Icons.play_arrow,
-                      size: 40,
-                    ),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      context.read<SongBloc>().add(PauseSongEvent());
-                    },
-                    icon: const Icon(
-                      Icons.pause,
-                      size: 40,
-                    ),
-                  ),
-                );
-              }),
+          PlayPauseSongWidget(),
         ],
       ),
     );

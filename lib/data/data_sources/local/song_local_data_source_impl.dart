@@ -1,3 +1,4 @@
+import 'package:flutter_music_player/core/error/permission_error.dart';
 import 'package:flutter_music_player/data/data_sources/song_local_data_source.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -13,7 +14,10 @@ class SongLocalDataSourceImpl extends SongLocalDataSource {
   Future<void> getPermission() async {
     bool permissionStatus = await audioQuery.permissionsStatus();
     if (!permissionStatus) {
-      await audioQuery.permissionsRequest();
+      final requestStatus = await audioQuery.permissionsRequest();
+      if (!requestStatus) {
+        throw PermissionError(message: "This app required Storage Permission");
+      }
     }
   }
 }
