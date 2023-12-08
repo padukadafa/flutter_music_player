@@ -4,6 +4,7 @@ import 'package:flutter_music_player/domain/usecases/get_song_list_use_case.dart
 import 'package:flutter_music_player/injection_container.dart';
 import 'package:flutter_music_player/presentation/bloc/song/song_bloc.dart';
 import 'package:flutter_music_player/presentation/pages/home/widgets/current_song_widget.dart';
+import 'package:flutter_music_player/presentation/widgets/play_pause_song_widget.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class HomePage extends StatelessWidget {
@@ -13,37 +14,49 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Simple Song Player"),
+          title: const Text("Simple Music Player"),
         ),
         body: Column(
           children: [
-            FutureBuilder<List<SongModel>>(
-              future: sl<GetSongListUseCase>().call(),
-              builder: (_, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(child: Text(snapshot.error.toString()));
+            BlocBuilder<SongBloc, SongState>(
+              builder: (context, state) {
+                if (state is SongError) {
+                  return Center(child: Text(state.message));
                 }
-                if (snapshot.hasData) {
-                  final data = snapshot.data!;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {
-                            context
-                                .read<SongBloc>()
-                                .add(PlaySongEvent(data[index]));
+                if (state is SongLoaded) {
+                  final data = state.songList!;
+                  return BlocBuilder<SongBloc, SongState>(
+                    builder: (context, state) {
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              onTap: () {
+                                context
+                                    .read<SongBloc>()
+                                    .add(PlaySongEvent(index));
+                              },
+                              title: Text(data[index].title),
+                              subtitle: Text(
+                                Duration(
+                                        milliseconds: data[index].duration ?? 0)
+                                    .toString()
+                                    .substring(3, 7),
+                              ),
+                              trailing: Visibility(
+                                child: Visibility(
+                                  visible: state.currentSongIndex == index,
+                                  child: const PlayPauseSongWidget(
+                                    iconSize: 20,
+                                  ),
+                                ),
+                              ),
+                            );
                           },
-                          title: Text(data[index].title),
-                          subtitle: Text(
-                            Duration(milliseconds: data[index].duration ?? 0)
-                                .toString()
-                                .substring(3, 7),
-                          ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   );
                 }
                 return const Center(

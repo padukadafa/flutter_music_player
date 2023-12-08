@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SongBloc>(),
+      create: (_) => sl<SongBloc>()..add(GetSongEvent()),
       child: const MaterialApp(
         home: HomePage(),
       ),

@@ -13,14 +13,18 @@ class SongRepositoryImpl extends SongRepository {
   }
 
   @override
-  Future<void> playSong(AudioPlayer player, SongModel song) async {
-    if (song.uri != null) {
-      await player.setUrl("file:${song.data}");
-      // await player.setLoopMode(LoopMode.all);
-      await player.play();
-    } else {
-      throw SongError(message: "Problem with audio source!");
-    }
+  Future<void> playSong(
+      AudioPlayer player, int index, List<SongModel> playlist) async {
+    final songList = ConcatenatingAudioSource(
+      useLazyPreparation: true,
+      shuffleOrder: DefaultShuffleOrder(),
+      children: playlist
+          .map((e) => AudioSource.uri(Uri.parse("file:${e.data}")))
+          .toList(),
+    );
+    await player.setAudioSource(songList,
+        initialIndex: index, initialPosition: Duration.zero);
+    await player.play();
   }
 
   @override
@@ -60,6 +64,34 @@ class SongRepositoryImpl extends SongRepository {
       await player.play();
     } catch (e) {
       throw SongError(message: "Something happens while resume the song");
+    }
+  }
+
+  @override
+  Future<void> toggleLoopMode(AudioPlayer player) async {
+    try {
+      if (player.loopMode == LoopMode.all) {
+        await player.setLoopMode(LoopMode.one);
+      } else if (player.loopMode == LoopMode.one) {
+        await player.setLoopMode(LoopMode.off);
+      } else {
+        await player.setLoopMode(LoopMode.all);
+      }
+    } catch (e) {
+      throw SongError(message: "Something happens while change loop mode");
+    }
+  }
+
+  @override
+  Future<void> shuffleSong(AudioPlayer player) async {
+    try {
+      if (player.shuffleModeEnabled) {
+        await player.setShuffleModeEnabled(false);
+      } else {
+        await player.setShuffleModeEnabled(true);
+      }
+    } catch (e) {
+      throw SongError(message: "Something happens while enable shuffle");
     }
   }
 }

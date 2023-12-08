@@ -5,7 +5,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 class PlaySongUseCase {
   final SongRepository _songRepository;
   PlaySongUseCase(this._songRepository);
-  Future<void> call(AudioPlayer player, SongModel song) {
-    return _songRepository.playSong(player, song);
+  Future<void> call(AudioPlayer player, int index, List<SongModel> playlist) {
+    return _songRepository.playSong(player, index, playlist);
   }
 }

@@ -6,33 +6,77 @@ part of 'song_bloc.dart';
 sealed class SongState {
   final SongModel? song;
   final Duration? duration;
-  const SongState({this.song, this.duration});
+  final int? currentSongIndex;
+  final List<SongModel>? songList;
+  const SongState({
+    this.songList,
+    this.song,
+    this.duration,
+    this.currentSongIndex,
+  });
 }
 
 final class SongInitial extends SongState {}
 
-final class SongPaused extends SongState {
+final class SongLoading extends SongState {}
+
+final class SongLoaded extends SongState {
+  final SongModel? song;
+  final Duration? duration;
+  final int? currentSongIndex;
+  @override
+  final List<SongModel>? songList;
+  const SongLoaded(
+      {this.song, this.duration, this.currentSongIndex, this.songList})
+      : super(
+          songList: songList,
+          currentSongIndex: currentSongIndex,
+          duration: duration,
+          song: song,
+        );
+  SongState copyWith(
+      {SongModel? song,
+      Duration? duration,
+      int? currentSongIndex,
+      List<SongModel>? songList}) {
+    return SongLoaded(
+        song: song ?? this.song,
+        duration: this.duration,
+        currentSongIndex: currentSongIndex ?? this.currentSongIndex,
+        songList: songList ?? this.songList);
+  }
+}
+
+final class SongPlayed extends SongLoaded {
   @override
   final SongModel song;
   @override
   final Duration duration;
-  const SongPaused(this.song, this.duration)
-      : super(song: song, duration: duration);
+  @override
+  final int currentSongIndex;
+  final List<SongModel>? songList;
+  const SongPlayed(
+      this.song, this.duration, this.currentSongIndex, this.songList)
+      : super(
+          song: song,
+          duration: duration,
+          currentSongIndex: currentSongIndex,
+          songList: songList,
+        );
 }
 
-final class SongPlayed extends SongState {
-  @override
-  final SongModel song;
-  @override
-  final Duration duration;
-  const SongPlayed(this.song, this.duration)
-      : super(song: song, duration: duration);
+final class SongError extends SongLoaded {
+  final String message;
+  SongError(this.message);
 }
 
-final class SongError extends SongState {}
-
-final class SongLoading extends SongState {
+final class SongPlayLoading extends SongLoaded {
   @override
-  final SongModel song;
-  const SongLoading(this.song) : super(song: song);
+  final int currentSongIndex;
+  final List<SongModel>? songList;
+  const SongPlayLoading(this.currentSongIndex, this.songList)
+      : super(
+          currentSongIndex: currentSongIndex,
+          songList: songList,
+        );
 }

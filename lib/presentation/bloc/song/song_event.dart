@@ -4,10 +4,12 @@ part of 'song_bloc.dart';
 sealed class SongEvent {}
 
 class PlaySongEvent extends SongEvent {
-  final SongModel song;
+  final int songIndex;
 
-  PlaySongEvent(this.song);
+  PlaySongEvent(this.songIndex);
 }
+
+class GetSongEvent extends SongEvent {}
 
 class StopSongEvent extends SongEvent {}
 
@@ -15,6 +17,7 @@ class PauseSongEvent extends SongEvent {}
 
 class SeekSongEvent extends SongEvent {
   final Duration duration;
+
   SeekSongEvent(this.duration);
 }
 
@@ -24,3 +27,19 @@ class ChangeSongPositionEvent extends SongEvent {
 }
 
 class ResumeSongEvent extends SongEvent {}
+
+class ToggleLoopModeEvent extends SongEvent {}
+
+class ShuffleSongEvent extends SongEvent {}
+
+class NextSongEvent extends SongEvent {
+  final int songIndex;
+
+  NextSongEvent(this.songIndex);
+}
+
+class PreviousSongEvent extends SongEvent {
+  final int songIndex;
+
+  PreviousSongEvent(this.songIndex);
+}

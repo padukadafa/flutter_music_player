@@ -60,10 +60,90 @@ class SongDetailPage extends StatelessWidget {
                 },
                 initialData: const Duration(milliseconds: 0),
               ),
-              TimeProgressWidget(),
+              const TimeProgressWidget(),
             ],
           ),
-          PlayPauseSongWidget(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              StreamBuilder(
+                stream: sl<AudioPlayer>().shuffleModeEnabledStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data ?? false) {
+                    return IconButton(
+                      onPressed: () {
+                        context.read<SongBloc>().add(ShuffleSongEvent());
+                      },
+                      icon: const Icon(
+                        Icons.shuffle_on_sharp,
+                        size: 40,
+                      ),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      context.read<SongBloc>().add(ShuffleSongEvent());
+                    },
+                    icon: const Icon(
+                      Icons.shuffle,
+                      size: 40,
+                    ),
+                  );
+                },
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.skip_previous,
+                  size: 40,
+                ),
+              ),
+              const PlayPauseSongWidget(),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.skip_next,
+                  size: 40,
+                ),
+              ),
+              StreamBuilder(
+                stream: sl<AudioPlayer>().loopModeStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data == LoopMode.all) {
+                    return IconButton(
+                      onPressed: () {
+                        context.read<SongBloc>().add(ToggleLoopModeEvent());
+                      },
+                      icon: const Icon(
+                        Icons.repeat_on_sharp,
+                        size: 40,
+                      ),
+                    );
+                  }
+                  if (snapshot.data == LoopMode.one) {
+                    return IconButton(
+                      onPressed: () {
+                        context.read<SongBloc>().add(ToggleLoopModeEvent());
+                      },
+                      icon: const Icon(
+                        Icons.repeat_one_on_sharp,
+                        size: 40,
+                      ),
+                    );
+                  }
+                  return IconButton(
+                    onPressed: () {
+                      context.read<SongBloc>().add(ToggleLoopModeEvent());
+                    },
+                    icon: const Icon(
+                      Icons.repeat,
+                      size: 40,
+                    ),
+                  );
+                },
+              ),
+            ],
+          )
         ],
       ),
     );
