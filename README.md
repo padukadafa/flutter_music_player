@@ -11,9 +11,17 @@
 - [x] Play In Background
 - [ ] Notification
 ## How to run in debug mode 
-> flutter pub get
-> flutter run
+```bash
+flutter pub get
+```
+```bash
+flutter run
+```
 
 ## How to build android app
-> flutter pub get
-> flutter build apk --no-shrinks
+```bash
+flutter pub get
+```
+```bash
+flutter build apk --no-shrinks
+```
