@@ -17,10 +17,15 @@ class TimeProgressWidget extends StatelessWidget {
                       .toString())
                   .substring(3, 7)),
               const Text("/"),
-              Text(((sl<AudioPlayer>().duration ??
-                          const Duration(milliseconds: 0))
-                      .toString())
-                  .substring(3, 7)),
+              StreamBuilder(
+                stream: sl<AudioPlayer>().playbackEventStream,
+                builder: (context, snapshot) {
+                  return Text(((snapshot.data?.duration ??
+                              const Duration(milliseconds: 0))
+                          .toString())
+                      .substring(3, 7));
+                },
+              ),
               const SizedBox(
                 width: 24,
               ),

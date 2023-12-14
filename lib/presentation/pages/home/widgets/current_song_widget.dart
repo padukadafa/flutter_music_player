@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_music_player/injection_container.dart';
 import 'package:flutter_music_player/presentation/bloc/song/song_bloc.dart';
 import 'package:flutter_music_player/presentation/pages/song_detail/song_detail_page.dart';
 import 'package:flutter_music_player/presentation/widgets/play_pause_song_widget.dart';
 import 'package:flutter_music_player/presentation/widgets/time_progress_widget.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:page_transition/page_transition.dart';
 
 class CurrentSongWidget extends StatelessWidget {
@@ -11,9 +13,13 @@ class CurrentSongWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SongBloc, SongState>(
-      builder: (context, state) {
-        if (state is SongPlayed) {
+    return StreamBuilder<int?>(
+        stream: sl<AudioPlayer>().currentIndexStream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.hasError) {
+            return const SizedBox();
+          }
+          final song = context.read<SongBloc>().state.songList![snapshot.data!];
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -21,7 +27,7 @@ class CurrentSongWidget extends StatelessWidget {
                 PageTransition(
                   type: PageTransitionType.bottomToTop,
                   curve: Curves.easeIn,
-                  child: SongDetailPage(song: state.song),
+                  child: SongDetailPage(song: song),
                 ),
               );
             },
@@ -40,9 +46,9 @@ class CurrentSongWidget extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(state.song.title),
+                          Text(song.title),
                           Text(
-                            state.song.artist ?? "",
+                            song.artist ?? "",
                             style: const TextStyle(fontSize: 12),
                           ),
                         ],
@@ -61,9 +67,6 @@ class CurrentSongWidget extends StatelessWidget {
               ),
             ),
           );
-        }
-        return const SizedBox();
-      },
-    );
+        });
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_music_player/injection_container.dart';
 import 'package:flutter_music_player/presentation/bloc/song/song_bloc.dart';
 import 'package:flutter_music_player/presentation/pages/home/widgets/current_song_widget.dart';
 import 'package:flutter_music_player/presentation/widgets/play_pause_song_widget.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class HomePage extends StatelessWidget {
@@ -25,39 +26,40 @@ class HomePage extends StatelessWidget {
                 }
                 if (state is SongLoaded) {
                   final data = state.songList!;
-                  return BlocBuilder<SongBloc, SongState>(
-                    builder: (context, state) {
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              onTap: () {
-                                context
-                                    .read<SongBloc>()
-                                    .add(PlaySongEvent(index));
-                              },
-                              title: Text(data[index].title),
-                              subtitle: Text(
-                                Duration(
-                                        milliseconds: data[index].duration ?? 0)
-                                    .toString()
-                                    .substring(3, 7),
-                              ),
-                              trailing: Visibility(
-                                child: Visibility(
-                                  visible: state.currentSongIndex == index,
-                                  child: const PlayPauseSongWidget(
-                                    iconSize: 20,
+                  return StreamBuilder(
+                      stream: sl<AudioPlayer>().currentIndexStream,
+                      builder: (context, snapshot) {
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: () {
+                                  context
+                                      .read<SongBloc>()
+                                      .add(PlaySongEvent(index));
+                                },
+                                title: Text(data[index].title),
+                                subtitle: Text(
+                                  Duration(
+                                          milliseconds:
+                                              data[index].duration ?? 0)
+                                      .toString()
+                                      .substring(3, 7),
+                                ),
+                                trailing: Visibility(
+                                  child: Visibility(
+                                    visible: snapshot.data == index,
+                                    child: const PlayPauseSongWidget(
+                                      iconSize: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
+                              );
+                            },
+                          ),
+                        );
+                      });
                 }
                 return const Center(
                   child: CircularProgressIndicator(),
