@@ -32,14 +32,6 @@ class ToggleLoopModeEvent extends SongEvent {}
 
 class ShuffleSongEvent extends SongEvent {}
 
-class NextSongEvent extends SongEvent {
-  final int songIndex;
+class NextSongEvent extends SongEvent {}
 
-  NextSongEvent(this.songIndex);
-}
-
-class PreviousSongEvent extends SongEvent {
-  final int songIndex;
-
-  PreviousSongEvent(this.songIndex);
-}
+class PreviousSongEvent extends SongEvent {}

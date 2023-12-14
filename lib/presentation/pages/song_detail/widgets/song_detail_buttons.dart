@@ -39,7 +39,9 @@ class SongDetailButtons extends StatelessWidget {
           },
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            context.read<SongBloc>().add(PreviousSongEvent());
+          },
           icon: const Icon(
             Icons.skip_previous,
             size: 40,
@@ -47,7 +49,9 @@ class SongDetailButtons extends StatelessWidget {
         ),
         const PlayPauseSongWidget(),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            context.read<SongBloc>().add(NextSongEvent());
+          },
           icon: const Icon(
             Icons.skip_next,
             size: 40,

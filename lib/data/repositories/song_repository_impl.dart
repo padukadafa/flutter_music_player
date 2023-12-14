@@ -94,4 +94,22 @@ class SongRepositoryImpl extends SongRepository {
       throw SongError(message: "Something happens while enable shuffle");
     }
   }
+
+  @override
+  Future<void> nextSong(AudioPlayer player) async {
+    try {
+      await player.seekToNext();
+    } catch (e) {
+      throw SongError(message: "Something happens while play next song");
+    }
+  }
+
+  @override
+  Future<void> previousSong(AudioPlayer player) async {
+    try {
+      await player.seekToPrevious();
+    } catch (e) {
+      throw SongError(message: "Something happens while play previous song");
+    }
+  }
 }

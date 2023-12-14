@@ -3,8 +3,10 @@ import 'package:flutter_music_player/data/data_sources/song_local_data_source.da
 import 'package:flutter_music_player/data/repositories/song_repository_impl.dart';
 import 'package:flutter_music_player/domain/repositories/song_repository.dart';
 import 'package:flutter_music_player/domain/usecases/get_song_list_use_case.dart';
+import 'package:flutter_music_player/domain/usecases/next_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/pause_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/play_song_use_case.dart';
+import 'package:flutter_music_player/domain/usecases/previous_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/resume_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/seek_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/shuffle_song_use_case.dart';
@@ -25,6 +27,9 @@ void initInjection() {
   sl.registerLazySingleton<GetSongListUseCase>(() => GetSongListUseCase(sl()));
   sl.registerLazySingleton<ResumeSongUseCase>(() => ResumeSongUseCase(sl()));
   sl.registerLazySingleton<ShuffleSongUseCase>(() => ShuffleSongUseCase(sl()));
+  sl.registerLazySingleton<NextSongUseCase>(() => NextSongUseCase(sl()));
+  sl.registerLazySingleton<PreviousSongUseCase>(
+      () => PreviousSongUseCase(sl()));
   sl.registerLazySingleton<ToggleLoopModeUseCase>(
       () => ToggleLoopModeUseCase(sl()));
   // Repository
@@ -45,5 +50,7 @@ void initInjection() {
         toggleLoopModeUseCase: sl(),
         getSongListUseCase: sl(),
         shuffleSongUseCase: sl(),
+        nextSongUseCase: sl(),
+        previousSongUseCase: sl(),
       ));
 }

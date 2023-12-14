@@ -11,4 +11,6 @@ abstract class SongRepository {
   Future<void> resumeSong(AudioPlayer player);
   Future<void> toggleLoopMode(AudioPlayer player);
   Future<void> shuffleSong(AudioPlayer player);
+  Future<void> nextSong(AudioPlayer player);
+  Future<void> previousSong(AudioPlayer player);
 }

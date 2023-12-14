@@ -14,59 +14,60 @@ class CurrentSongWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<int?>(
-        stream: sl<AudioPlayer>().currentIndexStream,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData || snapshot.hasError) {
-            return const SizedBox();
-          }
-          final song = context.read<SongBloc>().state.songList![snapshot.data!];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.bottomToTop,
-                  curve: Curves.easeIn,
-                  child: SongDetailPage(song: song),
-                ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              decoration: const BoxDecoration(
-                border: Border.symmetric(
-                  horizontal: BorderSide(),
-                ),
+      stream: sl<AudioPlayer>().currentIndexStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.hasError) {
+          return const SizedBox();
+        }
+        final song = context.read<SongBloc>().state.songList![snapshot.data!];
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.bottomToTop,
+                curve: Curves.easeIn,
+                child: SongDetailPage(song: song),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(song.title),
-                          Text(
-                            song.artist ?? "",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                      const Row(
-                        children: [
-                          TimeProgressWidget(),
-                          PlayPauseSongWidget(
-                            iconSize: 24,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            decoration: const BoxDecoration(
+              border: Border.symmetric(
+                horizontal: BorderSide(),
               ),
             ),
-          );
-        });
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(song.title),
+                        Text(
+                          song.artist ?? "",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    const Row(
+                      children: [
+                        TimeProgressWidget(),
+                        PlayPauseSongWidget(
+                          iconSize: 24,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_music_player/domain/usecases/get_song_list_use_case.dart';
+import 'package:flutter_music_player/domain/usecases/next_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/pause_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/play_song_use_case.dart';
+import 'package:flutter_music_player/domain/usecases/previous_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/resume_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/seek_song_use_case.dart';
 import 'package:flutter_music_player/domain/usecases/shuffle_song_use_case.dart';
@@ -22,6 +24,9 @@ class SongBloc extends Bloc<SongEvent, SongState> {
   final ToggleLoopModeUseCase toggleLoopModeUseCase;
   final GetSongListUseCase getSongListUseCase;
   final ShuffleSongUseCase shuffleSongUseCase;
+  final NextSongUseCase nextSongUseCase;
+  final PreviousSongUseCase previousSongUseCase;
+
   final AudioPlayer audioPlayer;
   SongBloc({
     required this.audioPlayer,
@@ -32,6 +37,8 @@ class SongBloc extends Bloc<SongEvent, SongState> {
     required this.toggleLoopModeUseCase,
     required this.getSongListUseCase,
     required this.shuffleSongUseCase,
+    required this.nextSongUseCase,
+    required this.previousSongUseCase,
   }) : super(SongInitial()) {
     on<GetSongEvent>((event, emit) async {
       try {
@@ -106,25 +113,20 @@ class SongBloc extends Bloc<SongEvent, SongState> {
     });
     on<NextSongEvent>((event, emit) {
       try {
-        emit(SongPlayLoading(event.songIndex, state.songList));
-        playSongUseCase.call(audioPlayer, event.songIndex, state.songList!);
-        emit(SongPlayed(state.songList![event.songIndex], audioPlayer.position,
-            event.songIndex, state.songList));
+        print("Next Song");
+        nextSongUseCase.call(audioPlayer);
       } catch (e) {
         print(e.toString());
       }
     });
     on<PreviousSongEvent>((event, emit) {
       try {
-        emit(SongPlayLoading(event.songIndex, state.songList));
-        playSongUseCase.call(audioPlayer, event.songIndex, state.songList!);
-        emit(SongPlayed(state.songList![event.songIndex], audioPlayer.position,
-            event.songIndex, state.songList));
+        previousSongUseCase.call(audioPlayer);
       } catch (e) {
         print(e.toString());
       }
     });
-    on<ShuffleSongEvent>((event, emit) {
+    on<ShuffleSongEvent>((event, emit) async {
       try {
         shuffleSongUseCase.call(audioPlayer);
       } catch (e) {
